@@ -10,6 +10,14 @@ const getContacts = (req, res) => {
 //@access public
 //status 201 as resource is created
 const createContact = (req, res) => {
+  console.log("The request body is :", req.body);
+
+  const { name, email, phone } = req.body;
+  if (!name || !email | !phone) {
+    res.status(400);
+    throw new Error("All fields are mandatory!");
+  }
+
   res.status(201).json({ message: "Create Contact" });
 };
 
@@ -22,7 +30,7 @@ const getContact = (req, res) => {
 };
 
 //@desc Update Contact
-//@route PUT /api/contacts
+//@route PUT /api/contacts/:id
 //@access public
 //status 201 as resource is created
 const updateContact = (req, res) => {
@@ -30,11 +38,17 @@ const updateContact = (req, res) => {
 };
 
 //@desc Delete Contact
-//@route DELETE /api/contacts
+//@route DELETE /api/contacts/:id
 //@access public
 //status 201 as resource is created
 const deleteContact = (req, res) => {
   res.status(200).json({ message: `Delete Contact for ${req.params.id}` });
 };
 
-module.exports = { getContact, createContact, getContact };
+module.exports = {
+  getContacts,
+  createContact,
+  getContact,
+  updateContact,
+  deleteContact,
+};
