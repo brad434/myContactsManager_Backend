@@ -2,7 +2,9 @@ const express = require("express");
 const errorHandler = require("./middleware/errorHandler");
 const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
+const connectDb = require("./config/dbConnection");
 
+connectDb();
 const app = express();
 
 const port = process.env.PORT || 5000;
@@ -16,7 +18,7 @@ const connect = async () => {
       useUnifiedTopology: true,
     });
 
-    console.log("MongoDB database connected");
+    console.log("MongoDB database connected. Notification from server.js");
   } catch (err) {
     console.log("MongoDB database connection failed");
   }

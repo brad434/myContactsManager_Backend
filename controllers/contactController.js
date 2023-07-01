@@ -1,10 +1,12 @@
 const asyncHandler = require("express-async-handler");
+const Contact = require("../models/contactModel");
 
 //@desc Get all contacts
 //@route GET /api/contacts
 //@access public
 const getContacts = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "Get All Contacts" });
+  const contacts = await Contact.find();
+  res.status(200).json(contacts);
 });
 
 //@desc Create New Contact
@@ -20,7 +22,8 @@ const createContact = asyncHandler(async (req, res) => {
     throw new Error("All fields are mandatory!");
   }
 
-  res.status(201).json({ message: "Create Contact" });
+  const contact = await Contact.create({ name, email, phone });
+  res.status(201).json(contact);
 });
 
 //@desc Get Contact
@@ -28,7 +31,14 @@ const createContact = asyncHandler(async (req, res) => {
 //@access public
 //status 201 as resource is created
 const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Get Contact for ${req.params.id}` });
+  const contact = await Contact.findById(req.params.id);
+
+  if (!contact) {
+    res.status(404);
+    throw new Error(`No client with the id of ${req.params.id} was found'`);
+  }
+
+  res.status(200).json(contact);
 });
 
 //@desc Update Contact
@@ -36,7 +46,20 @@ const getContact = asyncHandler(async (req, res) => {
 //@access public
 //status 201 as resource is created
 const updateContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Update Contact for ${req.params.id}` });
+  const contact = await Contact.findById(req.params.id);
+
+  if (!contact) {
+    res.status(404);
+    throw new Error(`No client with the id of ${req.params.id} was found'`);
+  }
+
+  const updatedContact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+
+  res.status(200).json(updatedContact);
 });
 
 //@desc Delete Contact
@@ -44,7 +67,15 @@ const updateContact = asyncHandler(async (req, res) => {
 //@access public
 //status 201 as resource is created
 const deleteContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Delete Contact for ${req.params.id}` });
+  const id = req.params.id;
+
+  if (!id) {
+    res.status(404);
+    throw new Error(`No client with the id of ${req.params.id} was found'`);
+  }
+
+  await Contact.findByIdAndDelete(id);
+  res.status(200).json(id);
 });
 
 module.exports = {
