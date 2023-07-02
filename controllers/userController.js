@@ -11,7 +11,8 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please provide all required fields");
   }
-  const userAvailable = await res.json({ message: "Register the user" });
+  const userAvailable = await User.findOne({ email });
+  res.json({ message: "Register the user" });
 
   res.json({ message: "Register the user" });
 });
